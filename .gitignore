@@ -1,0 +1,41 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+# .vscode/ CKL: should be included, as we want to have a project setting for the linebreak to be LF and not CR/LF
+
+# Terraform directories
+.terraform
+
+# Terraform files
+# *.tfvars
+*.plan.zip
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+tf-dependency-graph.png
+
+# openssh
+id_rsa
+id_rsa.pub
+
+# K8s
+.kube.config
+
+# .env files
+.env*
+!.enva
+!.enva.leave
+
+# Generated Terraform configurations
+*.gen.tf
+.terraform.lock.hcl
+
+# artifacts
+artifacts
+*.plan
+*.tfplan
+plan.md

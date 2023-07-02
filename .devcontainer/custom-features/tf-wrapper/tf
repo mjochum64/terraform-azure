@@ -1,0 +1,106 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+#  Wrapping Terraform  
+# -----------------------------------------------------------------------------
+wrap_terraform() {
+  echo ""
+  echo "${BLUE} Terraform                   ${RESET} ... CLI ARGS: ${@}"
+  echo ""
+
+  if [[ -z "${TF_WORKING_DIR}" ]]; then
+    terraform "${@}"
+  else
+    terraform -chdir=${TF_WORKING_DIR} "${@}"
+  fi
+  echo ""
+}
+
+
+# -----------------------------------------------------------------------------
+#  AuthX 
+# -----------------------------------------------------------------------------
+authenticate() {
+  if [[ (! -z "${ARM_CLIENT_SECRET}")  && (! -z ${ARM_CLIENT_ID}) && (! -z ${ARM_TENANT_ID}) && (! -z ${ARM_SUBSCRIPTION_ID}) ]]; then
+    echo ""
+    echo "${PURPLE} AuthN                       ${RESET} ... login with service principal"
+    echo ""
+    az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} --tenant ${ARM_TENANT_ID}
+	  az account set --subscription ${ARM_SUBSCRIPTION_ID}
+    echo ""
+  fi
+}
+
+
+# -----------------------------------------------------------------------------
+#  Environment Vars  
+# -----------------------------------------------------------------------------
+setenv() {
+  if [[ (! -z "${TOP_DIR}")  && (! -z ${TF_BASE_PATH}) && (! -z ${TF_VAR_level}) && (! -z ${TF_VAR_landingzone}) && (! -z ${TF_VAR_stage}) ]]; then
+
+    if [[ -z "${TF_VAR_workload}" ]]; then
+      
+      export TF_OUTPUT_DIR=${TOP_DIR}/.terraform/${TF_VAR_level}/${TF_VAR_landingzone}/${TF_VAR_stage}
+      
+      [[ "${TF_VAR_launchpad}" != "true" ]] && export TF_CLI_ARGS_init="-backend-config=backend-config.auto.tfvars -backend-config=container_name=${TF_VAR_stage}"
+    else
+
+      export TF_OUTPUT_DIR=${TOP_DIR}/.terraform/${TF_VAR_level}/${TF_VAR_workload}/${TF_VAR_stage}
+      export TF_VAR_key="${TF_VAR_workload}.tfstate"
+
+      [[ "${TF_VAR_launchpad}" != "true" ]] && export TF_CLI_ARGS_init="-backend-config=backend-config.auto.tfvars -backend-config=container_name=${TF_VAR_stage} -backend-config=key=level4/old/${TF_VAR_workload}.tfstate" 
+    fi
+
+    export TF_WORKING_DIR=${TOP_DIR}/${TF_BASE_PATH}/${TF_VAR_level}/${TF_VAR_landingzone}
+    export TF_DATA_DIR=${TF_OUTPUT_DIR}
+    export TF_PLAN_FILE=${TF_OUTPUT_DIR}/${TF_VAR_stage}.plan.zip
+
+    export TF_CLI_ARGS_plan="-input=false -out ${TF_PLAN_FILE} -compact-warnings"
+    export TF_CLI_ARGS_apply="-compact-warnings"
+  fi
+}
+
+printenv() {
+  echo ""
+	echo "${GREEN} Environment                 ${RESET} ... including (ARM|TF_) and excluding (SECRET|pwd|password|key)"
+  echo ""
+  env | grep  -E 'ARM|TF_' | grep -Ev 'SECRET|pwd|password|key' | sort
+  echo ""
+}
+
+
+# -----------------------------------------------------------------------------
+#  Interface  
+# -----------------------------------------------------------------------------
+RED=$(tput -Txterm setab 1 && tput -Txterm setaf 7)
+GREEN=$(tput -Txterm setab 2 && tput -Txterm setaf 7)
+YELLOW=$(tput -Txterm setab 3 && tput -Txterm setaf 0)
+PURPLE=$(tput -Txterm setab 5 && tput -Txterm setaf 7)
+BLUE=$(tput -Txterm setab 4 && tput -Txterm setaf 7)
+WHITE=$(tput -Txterm setab 7 && tput -Txterm setaf 0)
+RESET=$(tput -Txterm sgr0)
+BLUE_TEXT=$(tput -Txterm setaf 4)
+RED_TEXT=$(tput -Txterm setaf 1)
+YELLOW_TEXT=$(tput -Txterm setaf 3)
+BOLD=$(tput bold)
+
+
+echo -e "
+
+               __        
+  /\/\   __ _  \ \  ___  
+ /    \ / _` |  \ \/ _ \ 
+/ /\/\ \ (_| /\_/ / (_) |
+\/    \/\__,_\___/ \___/ 
+
+     ${PURPLE} Infrastructure as Code ${RESET}  
+
+"
+
+# -----------------------------------------------------------------------------
+#  Command Chain 
+# -----------------------------------------------------------------------------
+setenv
+printenv
+authenticate
+[[ "${@}" == *"apply"* ]] && wrap_terraform "${@}" "${TF_PLAN_FILE}" || wrap_terraform "${@}"

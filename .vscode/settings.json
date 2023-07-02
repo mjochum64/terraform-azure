@@ -1,0 +1,7 @@
+{
+  "files.eol": "\n",
+  "[terraform]": {
+    "editor.formatOnSave": true
+  },
+  "files.autoSave": "onFocusChange"
+}

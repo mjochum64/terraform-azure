@@ -1,0 +1,6 @@
+{
+  "id": "autoenv",
+  "version": "1.0.0",
+  "name": "autoenv",
+  "installsAfter": ["ghcr.io/devcontainers/features/common-utils"]
+}

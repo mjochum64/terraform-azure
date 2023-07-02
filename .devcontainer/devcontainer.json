@@ -1,0 +1,84 @@
+{
+	"name": "MyDevContainer",
+	"image": "ubuntu:22.04",
+	"runArgs": [
+		"--env-file",
+		"${localWorkspaceFolder}/.env",
+		"-v",
+		"${env:SSH_AUTH_SOCK}:/tmp/ssh-agent.socket",
+		"-e",
+		"SSH_AUTH_SOCK=/tmp/ssh-agent.socket"
+	],
+	"mounts": [		
+		"type=bind,source=/home/${localEnv:USER}/.ssh,target=/home/vscode/.ssh,readonly"
+	],
+	"privileged": true,
+	"initializeCommand": "${localWorkspaceFolder}/.devcontainer/preContainerStart.sh",
+	"postCreateCommand": "/usr/bin/zsh .devcontainer/postCreateCommand.sh > /tmp/post-create.log",	
+	"postStartCommand": "/usr/bin/zsh",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				// GitHub extensions
+				"cschleiden.vscode-github-actions",
+				"GitHub.vscode-pull-request-github",
+		
+				// Azure extensions
+				"ms-azuretools.vscode-bicep",
+		
+				// Collaboration extensions
+				"eamodio.gitlens",
+				"EditorConfig.EditorConfig",
+				"MS-vsliveshare.vsliveshare-pack",
+				"streetsidesoftware.code-spell-checker",
+		
+				// Markdown extensions
+				"bierner.github-markdown-preview",
+				"DavidAnson.vscode-markdownlint",
+				"docsmsft.docs-linting",
+				"johnpapa.read-time",
+				"yzhang.markdown-all-in-one",
+		
+				// Required extensions
+				"GitHub.copilot",
+				"ms-vscode.vscode-node-azure-pack",
+				"VisualStudioExptTeam.vscodeintellicode"
+			]
+		},
+		"settings": {
+			"explorer.sortOrder": "type",
+	      	"explorer.fileNesting.enabled": true,
+      		"explorer.fileNesting.patterns": {
+        		"*.bicep": "${capture}.json",
+        		"*.razor": "${capture}.razor.css",
+        		"*.js": "${capture}.js.map"
+      		},
+			"terminal.integrated.fontFamily": "CaskaydiaCove Nerd Font",
+			"editor.minimap.enabled": false,
+			"terminal.integrated.defaultProfile.linux": "zsh",
+			"terminal.integrated.profiles.linux": {
+				"zsh": {
+					"path": "/usr/bin/zsh"
+				}
+			}
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:1": {
+			"installZsh": true,
+			"installOhMyZsh": true,
+			"upgradePackages": true,
+			"username": "vscode",
+			"uid": "1000",
+			"gid": "1000"
+		},		
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/devcontainers/features/terraform:1": {},
+		"ghcr.io/devcontainers/features/azure-cli:1": {},
+		"./custom-features/autoenv": {},
+        "./custom-features/terraform-j2md": {},
+        "./custom-features/tf-wrapper": {}
+	},
+	"remoteUser": "vscode",
+	"containerUser": "vscode"
+}

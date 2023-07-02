@@ -1,0 +1,13 @@
+{
+  "id": "terraform-j2md",
+  "version": "1.0.0",
+  "name": "terraform-j2md",
+  "installsAfter": ["ghcr.io/devcontainers/features/common-utils"],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "0.0.4",
+      "description": "terraform-j2md version to install"
+    }
+  }
+}

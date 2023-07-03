@@ -4,7 +4,7 @@
         {
             "label": "Login into Azure Cloud",
             "type": "shell",
-            "command": "echo ${input:getMandant} && az login --service-principal -u \"${input:getClientID}\" -p \"${input:getClientSecret}\" -t \"${input:getTenantID}\" && az account set --subscription \"${input:getSubscriptionID}\"",
+            "command": "az login --service-principal -u \"${input:getClientID}\" -p \"${input:getClientSecret}\" -t \"${input:getTenantID}\" && az account set --subscription \"${input:getSubscriptionID}\"",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -83,6 +83,6 @@
                 "fieldSeparator": " ",
                 "description": "Welche SubscriptionID soll verwendet werden?"
             }
-        },
+        }
     ]
 }

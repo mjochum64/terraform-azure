@@ -4,14 +4,13 @@
         {
             "label": "Login into Azure Cloud",
             "type": "shell",
-            "command": "echo ${input:getMandant} && az login --service-principal -u \"${input:getClientID}\" -p \"${input:getClientSecret}\" -t \"${input:getTenantID}\"",
+            "command": "echo ${input:getMandant} && az login --service-principal -u \"${input:getClientID}\" -p \"${input:getClientSecret}\" -t \"${input:getTenantID}\" && az account set --subscription \"${input:getSubscriptionID}\"",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [],
             "group": "build"
         },
-        //az account set --subscription ${ARM_SUBSCRIPTION_ID}",
         {
             "label": "Format terraform code",
             "type": "shell",
@@ -83,6 +82,16 @@
                 "command": "grep \"ARM_TENANT_ID=\" ${workspaceFolder}/.env.${input:getMandant} | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
                 "fieldSeparator": " ",
                 "description": "Welche TenantID soll verwendet werden?"
+            }
+        },
+        {
+            "id": "getSubscriptionID",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "grep \"ARM_SUBSCRIPTION_ID=\" ${workspaceFolder}/.env.${input:getMandant} | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "fieldSeparator": " ",
+                "description": "Welche SubscriptionID soll verwendet werden?"
             }
         },
     ]

@@ -45,21 +45,11 @@
     ],
     "inputs": [
         {
-            "id": "getMandant",
-            "type": "command",
-            "command": "shellCommand.execute",
-            "args": {
-                "command": "echo 'mjochum|mjochum|mjochum|\njuris|juris|juris GmbH|\nstollfuss|stollfuss|Stollfuß Verlag|' | sed -e 's/^\\s*//' -e 's/\\s*|\\s*/|/g'",
-                "fieldSeparator": "|",
-                "description": "Welcher Mandant soll verwendet werden?"
-            }
-        },
-        {
             "id": "getClientID",
             "type": "command",
             "command": "shellCommand.execute",
             "args": {
-                "command": "grep -E \"ARM_CLIENT_ID=\" ${workspaceFolder}/.env.${input:getMandant} | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "command": "grep -E \"ARM_CLIENT_ID=\" ${workspaceFolder}/.env | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
                 "fieldSeparator": " ",
                 "description": "Welche Client ID soll verwendet werden?"
             }
@@ -69,7 +59,7 @@
             "type": "command",
             "command": "shellCommand.execute",
             "args": {
-                "command": "grep \"ARM_CLIENT_SECRET=\" ${workspaceFolder}/.env.${input:getMandant} | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "command": "grep \"ARM_CLIENT_SECRET=\" ${workspaceFolder}/.env | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
                 "fieldSeparator": " ",
                 "description": "Welches Secret soll verwendet werden?"
             }
@@ -79,7 +69,7 @@
             "type": "command",
             "command": "shellCommand.execute",
             "args": {
-                "command": "grep \"ARM_TENANT_ID=\" ${workspaceFolder}/.env.${input:getMandant} | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "command": "grep \"ARM_TENANT_ID=\" ${workspaceFolder}/.env | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
                 "fieldSeparator": " ",
                 "description": "Welche TenantID soll verwendet werden?"
             }
@@ -89,7 +79,7 @@
             "type": "command",
             "command": "shellCommand.execute",
             "args": {
-                "command": "grep \"ARM_SUBSCRIPTION_ID=\" ${workspaceFolder}/.env.${input:getMandant} | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "command": "grep \"ARM_SUBSCRIPTION_ID=\" ${workspaceFolder}/.env | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
                 "fieldSeparator": " ",
                 "description": "Welche SubscriptionID soll verwendet werden?"
             }

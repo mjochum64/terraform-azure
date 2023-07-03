@@ -1,4 +1,11 @@
 {
+  "terminal.integrated.scrollback": 100000,
+  "terminal.integrated.profiles.linux": {
+      "bash": {
+          "path": "/bin/zsh"
+      }
+  },
+  "terminal.integrated.defaultProfile.linux": "zsh",
   "files.eol": "\n",
   "[terraform]": {
     "editor.formatOnSave": true

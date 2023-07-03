@@ -4,9 +4,14 @@
         {
             "label": "Login into Azure Cloud",
             "type": "shell",
-            "command": "az login --use-device-code",
-            "problemMatcher": []
+            "command": "echo az login --service-principal -u \"${input:getClientID}\" -p \"${input:getClientSecret}\" -t \"${input:getTenantID}\"",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": "build"
         },
+        //az account set --subscription ${ARM_SUBSCRIPTION_ID}",
         {
             "label": "Format terraform code",
             "type": "shell",
@@ -38,5 +43,47 @@
             "command": "terraform show -json tf.plan|terraform-j2md>plan.md",
             "problemMatcher": []
         }
+    ],
+    "inputs": [
+        {
+            "id": "getMandant",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "echo 'mjochum|mjochum|mjochum|\njuris|juris|juris GmbH|\nstollfuss|stollfuss|Stollfuß Verlag|' | sed -e 's/^\\s*//' -e 's/\\s*|\\s*/|/g'",
+                "fieldSeparator": "|",
+                "description": "Welcher Mandant soll verwendet werden?"
+            }
+        },
+        {
+            "id": "getClientID",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "grep \"${input:getMandant}_ARM_CLIENT_ID=\" ${workspaceFolder}/.env | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "fieldSeparator": " ",
+                "description": "Welchem Client ID soll verwendet werden?"
+            }
+        },
+        {
+            "id": "getClientSecret",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "grep \"${input:getMandant}_ARM_CLIENT_SECRET=\" ${workspaceFolder}/.env | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "fieldSeparator": " ",
+                "description": "Welches Secret soll verwendet werden?"
+            }
+        },
+        {
+            "id": "getTenantID",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "grep \"${input:getMandant}_ARM_TENANT_ID=\" ${workspaceFolder}/.env | cut -d\"=\" -f2 | cut -d\"=\" -f2 | sort | uniq",
+                "fieldSeparator": " ",
+                "description": "Welche TenantID soll verwendet werden?"
+            }
+        },
     ]
 }
